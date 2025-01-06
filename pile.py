@@ -1,7 +1,7 @@
 def nouvelle_pile():
     return list()
 
-def emplier(p, e):
+def empiler(p, e):
     p.append(e)
 
 def depiler(p):
