@@ -16,6 +16,15 @@ def compter_arretes_matrice_adjacence(tableau):
     nb_arretes = nb_arretes / 2  
     print(nb_arretes)  # Affichage du nombre total d'arêtes
 
+def compter_arcs_matrice_adjacence(tableau):
+    nb_arcs = 0  # Initialisation du compteur d'arcs
+    for i2 in range(len(tableau[0])):  # Parcours des colonnes de la matrice
+        for i in range(len(tableau[i2])):  # Parcours des lignes de la matrice
+            # Ajout de la valeur courante à la somme totale
+            nb_arcs += tableau[i2][i]
+    
+    print(nb_arcs)  # Affichage du nombre total d'arc
+
 # Fonction pour compter le nombre d'arêtes dans un graphe représenté par une liste d'adjacence
 def compter_arretes_list_adjacence(tableau):
     nb_sommets_visites = set()  # Ensemble pour éviter de compter deux fois les mêmes arêtes
