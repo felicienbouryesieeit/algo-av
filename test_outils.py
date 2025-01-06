@@ -22,5 +22,7 @@ tableau_list_adjacence = {
 # Appel d'une fonction pour compter le nombre d'arêtes dans le graphe représenté par la matrice d'adjacence
 outils.compter_arretes_matrice_adjacence(tableau_matrice_adjacence)
 
+outils.compter_arcs_matrice_adjacence(tableau_matrice_adjacence)
+
 # Appel d'une fonction pour compter le nombre d'arêtes dans le graphe représenté par la liste d'adjacence
 outils.compter_arretes_list_adjacence(tableau_list_adjacence)
