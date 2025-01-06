@@ -1,16 +1,26 @@
+# Importation du module contenant des outils pour les opérations sur les graphes
 import outils
 
-
-
-
-
-
-
-tableau = [
-[0, 1, 1,1],
-[1, 0, 0,0],
-[1, 0, 0,0],
-[1, 0, 0,0]
+# Définition d'une matrice d'adjacence pour un graphe
+# Chaque ligne/colonne représente un nœud, et une valeur de 1 indique une arête entre les nœuds correspondants
+tableau_matrice_adjacence = [
+    [0, 1, 1, 1],  # Le premier nœud est connecté aux trois autres
+    [1, 0, 0, 0],  # Le deuxième nœud est connecté uniquement au premier
+    [1, 0, 0, 0],  # Le troisième nœud est connecté uniquement au premier
+    [1, 0, 0, 0]   # Le quatrième nœud est connecté uniquement au premier
 ]
 
-outils.compter_arretes(tableau)
+# Définition d'une liste d'adjacence pour un graphe
+# Chaque clé représente un nœud, et la valeur est une liste de nœuds auxquels il est connecté
+tableau_list_adjacence = {
+    "Aurora": ["Olavi", "Tapio"],  # "Aurora" est connecté à "Olavi" et "Tapio"
+    "Ilona": [],                   # "Ilona" n'a aucune connexion
+    "Olavi": ["Aurora"],           # "Olavi" est connecté uniquement à "Aurora"
+    "Tapio": ["Aurora"]            # "Tapio" est connecté uniquement à "Aurora"
+}
+
+# Appel d'une fonction pour compter le nombre d'arêtes dans le graphe représenté par la matrice d'adjacence
+outils.compter_arretes_matrice_adjacence(tableau_matrice_adjacence)
+
+# Appel d'une fonction pour compter le nombre d'arêtes dans le graphe représenté par la liste d'adjacence
+outils.compter_arretes_list_adjacence(tableau_list_adjacence)

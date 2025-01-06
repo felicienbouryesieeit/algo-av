@@ -1,40 +1,31 @@
-# Tableau initial
-"""
-tableau = [
-[0, 1, 0,1],
-[1, 0, 0,0],
-[0, 0, 0,0],
-[1, 0, 0,0]
-]
-"""
-
-# Ajouter une nouvelle ligne (par exemple [10, 11, 12])
-
-
-
-# Ajouter une nouvelle colonne (par exemple des 0 à chaque ligne)
-#for ligne in tableau:
-#    ligne.append(0)
-
-# Afficher le tableau résultant
-#for ligne in tableau:
-    #print(ligne)
-
-
-
+# Fonction pour créer et remplir un tableau avec des lignes supplémentaires
 def create_tableau(tableau):
-    for i in range(5):  # 0 to 4
-        nouvelle_ligne = [10, 11, 12]
-        tableau.append(nouvelle_ligne)
-        
-def compter_arretes(tableau):
-    nb_arretes=0
-    for i2 in range(len(tableau[0])):
-        for i in range(len(tableau[i2])):
+    for i in range(5):  # Boucle de 0 à 4 
+        nouvelle_ligne = [10, 11, 12]  # Nouvelle ligne contenant trois éléments
+        tableau.append(nouvelle_ligne)  # Ajout de la nouvelle ligne au tableau
 
-            #print(tableau[i2][i])
-            
-            nb_arretes+=tableau[i2][i]
+# Fonction pour compter le nombre d'arêtes dans un graphe représenté par une matrice d'adjacence
+def compter_arretes_matrice_adjacence(tableau):
+    nb_arretes = 0  # Initialisation du compteur d'arêtes
+    for i2 in range(len(tableau[0])):  # Parcours des colonnes de la matrice
+        for i in range(len(tableau[i2])):  # Parcours des lignes de la matrice
+            # Ajout de la valeur courante à la somme totale
+            nb_arretes += tableau[i2][i]
+    
+    # Division par 2 pour éviter de compter deux fois les arêtes
+    nb_arretes = nb_arretes / 2  
+    print(nb_arretes)  # Affichage du nombre total d'arêtes
 
-    nb_arretes=nb_arretes/2
-    print(nb_arretes)
+# Fonction pour compter le nombre d'arêtes dans un graphe représenté par une liste d'adjacence
+def compter_arretes_list_adjacence(tableau):
+    nb_sommets_visites = set()  # Ensemble pour éviter de compter deux fois les mêmes arêtes
+    nb_arretes = 0  # Initialisation du compteur d'arêtes
+
+    for sommet, voisins in tableau.items():
+        for voisin in voisins:
+            # Vérification si l'arête a déjà été comptée dans les deux sens
+            if (sommet, voisin) not in nb_sommets_visites and (voisin, sommet) not in nb_sommets_visites:
+                nb_sommets_visites.add((sommet, voisin))  # Ajout de l'arête à l'ensemble
+                nb_arretes += 1  # Incrémentation du compteur d'arêtes
+
+    print(nb_arretes)  # Affichage du nombre total d'arêtes
