@@ -1,12 +1,20 @@
+# Importation du module pile
 import pile
 
-list = pile.nouvelle_pile()
+# Création d'une nouvelle pile vide
+ma_pile = pile.nouvelle_pile()
 
-pile.empiler(list, 10)
-pile.empiler(list, 11)
-pile.empiler(list, 12)
-pile.empiler(list, 13)
+# Ajout de plusieurs éléments au sommet de la pile
+pile.empiler(ma_pile, 10)  # Ajoute 10
+pile.empiler(ma_pile, 11)  # Ajoute 11
+pile.empiler(ma_pile, 12)  # Ajoute 12
+pile.empiler(ma_pile, 13)  # Ajoute 13
 
-pile.depiler(list)
+# Vérifie si la pile est vide avant de retirer un élément
+if not pile.pile_vide(ma_pile):
+    pile.depiler(ma_pile)  # Retire l'élément au sommet (13)
+else:
+    print("La pile est vide, impossible de dépiler.")
 
-print(list)
+# Affichage de l'état actuel de la pile
+print(ma_pile)  # Affiche [10, 11, 12]
