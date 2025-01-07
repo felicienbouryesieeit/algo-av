@@ -70,7 +70,6 @@ somint=[]
 adj = []
 adjint=[]
 mat = []
-#print ("liste sommet " + str(tuple(liste_sommet)))
 
 def verifier_titre_global(texte1,texte2):
     global nb_titre_actuel
@@ -90,8 +89,6 @@ def verifier_titre_global(texte1,texte2):
 
 def ajouter_adjint(resultat):
     adjint_actuel=[ajouter_adjint2(resultat,0),ajouter_adjint2(resultat,1)]
-        #if str(resultat[i2][0]).strip() == str(som[i2]).strip():
-        #print("c est bon : "+str(str(som[i2]).strip() == str(resultat[0][0]).strip()))
     print("adjint actuel : "+str(adjint_actuel))
     adjint.append(adjint_actuel)
 
@@ -176,21 +173,14 @@ def creer_matrice():
             matrice2.append(0)
             
         matrice.append(matrice2)
-    #print(matrice)
     mat = matrice
     rajouter_les_arcs()
 
 def rajouter_les_arcs():
     global mat
-    print("oui")
-    #for i2 in range(len(som)):
-    #    if str(adj[i][0][0]).strip() == str(som[i2]).strip():
-    #            print((adj[i][0][0]).strip())
 
     for i in range(len(adjint)):
         mat[adjint[i][0]][adjint[i][1]]=1
-    
-    # mat[1][2]=42
     
     for i in range(len(mat)):
         print(str(som[i]).strip()+" "+str(mat[i]))
