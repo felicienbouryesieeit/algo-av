@@ -9,10 +9,10 @@ def create_tableau(tableau):
 # Fonction pour compter le nombre d'arêtes dans un graphe représenté par une matrice d'adjacence
 def compter_aretes_matrice_adjacente(tableau):
     nb_aretes = 0  # Initialisation du compteur d'arêtes
-    for i2 in range(len(tableau[0])):  # Parcours des colonnes de la matrice
-        for i in range(len(tableau[i2])):  # Parcours des lignes de la matrice
+    for j in range(len(tableau[0])):  # Parcours des colonnes de la matrice
+        for i in range(len(tableau[j])):  # Parcours des lignes de la matrice
             # Ajout de la valeur courante à la somme totale
-            nb_aretes += tableau[i2][i]
+            nb_aretes += tableau[j][i]
     
     # Division par 2 pour éviter de compter deux fois les arêtes
     nb_aretes = nb_aretes / 2  
@@ -20,10 +20,10 @@ def compter_aretes_matrice_adjacente(tableau):
 
 def compter_arcs_matrice_adjacente(tableau):
     nb_arcs = 0  # Initialisation du compteur d'arcs
-    for i2 in range(len(tableau[0])):  # Parcours des colonnes de la matrice
-        for i in range(len(tableau[i2])):  # Parcours des lignes de la matrice
+    for j in range(len(tableau[0])):  # Parcours des colonnes de la matrice
+        for i in range(len(tableau[j])):  # Parcours des lignes de la matrice
             # Ajout de la valeur courante à la somme totale
-            nb_arcs += tableau[i2][i]
+            nb_arcs += tableau[j][i]
     
     print(nb_arcs)  # Affichage du nombre total d'arc
 
@@ -70,6 +70,7 @@ somint=[]
 adj = []
 adjint=[]
 mat = []
+visite = []
 
 def verifier_titre_global(texte1,texte2):
     global nb_titre_actuel
@@ -95,9 +96,9 @@ def ajouter_adjint(resultat):
 def ajouter_adjint2(resultat,index):
     
     arc1=0
-    for i2 in range(len(som)):
-        if str(som[i2]).strip() == str(resultat[0][index]).strip():
-            arc1 = i2
+    for j in range(len(som)):
+        if str(som[j]).strip() == str(resultat[0][index]).strip():
+            arc1 = j
             
     return arc1
             
@@ -169,7 +170,7 @@ def creer_matrice():
         
         matrice2=[]
         
-        for i2 in range(len(som)):
+        for j in range(len(som)):
             matrice2.append(0)
             
         matrice.append(matrice2)
@@ -178,12 +179,45 @@ def creer_matrice():
 
 def rajouter_les_arcs():
     global mat
+    global visite
 
     for i in range(len(adjint)):
-        mat[adjint[i][0]][adjint[i][1]]=1
+        mat[adjint[i][ visite[0] ]][adjint[i][ visite[1] ]]=1
     
     for i in range(len(mat)):
         print(str(som[i]).strip()+" "+str(mat[i]))
 
 # Appelle la fonction principale pour lire et valider le fichier
-lire_graphe_txt()
+def begin_graphe(visite2):
+    global visite
+    if visite2:
+        visite = [0,1]
+    else :
+        visite = [1,0]
+    
+    lire_graphe_txt()
+
+
+
+#
+
+def parcours_en_profondeur(numéro):
+    
+
+    begin_graphe(False)
+
+    
+    print("Connection en profondeur de : "+str(som[numéro]).strip()+" = "+str(mat[numéro]))
+    nb_visite = 0
+    for i in range(len(mat[numéro])):
+        nb_visite+=mat[numéro][i]
+    print("nombre de visites : "+str(nb_visite))
+    
+parcours_en_profondeur(4)
+
+
+
+
+
+
+
