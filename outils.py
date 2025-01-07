@@ -188,7 +188,6 @@ def rajouter_les_arcs():
     #            print((adj[i][0][0]).strip())
 
     for i in range(len(adjint)):
-        print("jsp")
         mat[adjint[i][0]][adjint[i][1]]=1
     
     # mat[1][2]=42
