@@ -49,9 +49,9 @@ def compter_arcs_list_adjacente(liste_adjacence):
 
     print(nb_arcs)
 
-def erreur():
+def erreur(message="\nErreur : Format ou données invalides"):
     # Fonction appelée pour afficher un message d'erreur générique
-    print("erreur")
+    print(message)
 
 # Ouvre le fichier "graphe.txt" en mode lecture et lit toutes les lignes
 with open("graphe.txt", "r", encoding="utf-8") as fichier:
@@ -59,17 +59,18 @@ with open("graphe.txt", "r", encoding="utf-8") as fichier:
 
 # Variables globales pour suivre le nombre de sommets et le titre actuel
 nb_sommet2 = 0
+nb_arcs2=0
 nb_titre_actuel = 0
 nb_titre_sommet=0
 
+som = []
+adj = []
+#print ("liste sommet " + str(tuple(liste_sommet)))
+
 def verifier_titre_global(texte1,texte2):
     global nb_titre_actuel
-    #print("ok")
     chaine = texte1
-    #lignes[1]
-    #" SOMMETS"
     caracterenegatif=len(texte2)  # Longueur du texte attendu
-    print("test : "+str(caracterenegatif))
 
     # Extraire la partie numérique avant le texte attendu
     nouvelle_chaine = chaine[:-caracterenegatif] 
@@ -82,25 +83,30 @@ def verifier_titre_global(texte1,texte2):
         nb_titre_actuel = int(nouvelle_chaine)
     return estvalide
 
-
 def verifier_arretes(i):
-    print("arretes"+lignes[i])
+    global nb_arcs2
     
     pattern = r'(\w+)\s+(\w+)'
-
+    nb_arcs2+=1
     # Recherche des deux mots
     resultat = re.findall(pattern, lignes[i])
+    print(f"\narretes "+resultat[0][0])
+    adj.append(resultat)
 
     if (i<(len(lignes)-1)) :
     # Affichage des résultats
-        print(lignes[i])
         verifier_arretes(i+1)
     else :
-        print("fin du code")
-    #nombre_lignes = len(lignes)
-    #len(lignes)
+        if nb_titre_actuel==nb_arcs2:
+            print(f"\nValidation des arêtes réussie : {nb_arcs2}/{nb_titre_actuel}")
+            creer_matrice()
+        else :
+            erreur(f"\nLe nombre d'arêtes ne correspond pas : {nb_arcs2}/{nb_titre_actuel}")
+        
 
 def verifier_titre_arretes():
+    global nb_arcs2
+    nb_arcs2=0
     verifier_arretes(nb_sommet2+2+1)
 
 
@@ -109,31 +115,20 @@ def verifier_nom_sommet(i):
         global nb_titre_sommet
         if verifier_titre_global(lignes[i]," ARCS")==False:
             nb_sommet2 = nb_sommet2+1
-            print("sommet: "+lignes[i])
+            print(f"sommet: "+lignes[i])
+            som.append(lignes[i]) 
             verifier_nom_sommet(i+1)
                 
         else:
             # Vérifie si le nombre de sommets correspond au titre
-            print("tortue b "+str(nb_titre_sommet)+" "+str(nb_sommet2))
             if nb_titre_sommet==nb_sommet2:
-                #print("tortue")
                 verifier_titre_arretes()
             else : 
-                erreur()  # Appelle la fonction d'erreur si les valeurs ne correspondent pas
+                erreur(f"\nLe nombre de sommets ne correspond pas : {nb_sommet2}/{nb_titre_sommet}") # Appelle la fonction d'erreur si les valeurs ne correspondent pas
 
 def lire_graphe_txt():
-    # Ouvrir et lire le fichier
-    # Accéder à la 2e ligne (index 1)
-    #nb_actuel = int(ligne_souhaitee[2])
-    
+    # Ouvrir et lire le fichier    
     if lignes[0].strip() == "GRAPHE ORIENTE" or lignes[0].strip() == "GRAPHE NON ORIENTE":
-
-        #print(ligne_souhaitee)  
-        #isdigit()
-        
-        #chaine = lignes[1]
-
-        #nouvelle_chaine = chaine[:-8]
 
         # Vérifie le titre global des sommets
         if verifier_titre_global(lignes[1]," SOMMETS"): #lignes[1].strip() == nouvelle_chaine.strip()+" SOMMETS" and nouvelle_chaine.strip().isdigit():
@@ -142,13 +137,36 @@ def lire_graphe_txt():
             global nb_titre_actuel
 
             nb_titre_sommet=nb_titre_actuel
-            verifier_nom_sommet(2)  # Vérifie les noms des sommets
-            #print(lignes[1])
-  
+            verifier_nom_sommet(2)  # Vérifie les noms des sommets  
         else:
-            erreur()  # Appelle la fonction d'erreur si le format des sommets est incorrect
+            erreur(f"\nFormat du titre des sommets invalide.") # Appelle la fonction d'erreur si le format des sommets est incorrect
     else:
-        erreur()  # Appelle la fonction d'erreur si le type de graphe est invalide
+        erreur(f"\nLe type de graphe est invalide.") # Appelle la fonction d'erreur si le type de graphe est invalide
 
 # Appelle la fonction principale pour lire et valider le fichier
+mat = []
+def creer_matrice():
+    print("Som est : "+str(len(som)))
+    global mat
+    matrice= []
+    for i in range(len(som)):
+        for i2 in range(len(som)):
+            matrice.append(0)
+    print(matrice)
+    mat = matrice
+    rajouter_les_arcs()
+
+def rajouter_les_arcs():
+    print("oui")
+    for i in range(len(adj)):
+        mat[adj()][0]=1
+
+
+
+
+
+
+
+
+
 lire_graphe_txt()
