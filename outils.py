@@ -55,7 +55,8 @@ def erreur(message="\nErreur : Format ou données invalides"):
 
 # Ouvre le fichier "graphe.txt" en mode lecture et lit toutes les lignes
 #with open("graphe.txt", "r", encoding="utf-8") as fichier:
-with open(r"algo-av/graphe.txt", "r", encoding="utf-8") as fichier:
+
+with open("graphe.txt", "r", encoding="utf-8") as fichier:
     lignes = fichier.readlines()
 
 
@@ -213,7 +214,8 @@ def parcours_en_profondeur(numéro):
         nb_visite+=mat[numéro][i]
     print("nombre de visites : "+str(nb_visite))
     
-parcours_en_profondeur(4)
+#parcours_en_profondeur(4)
+begin_graphe(False)
 
 
 

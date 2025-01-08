@@ -20,11 +20,11 @@ tableau_list_adjacente = {
 }
 
 # Appel d'une fonction pour compter le nombre d'arêtes dans le graphe représenté par la matrice d'adjacence
-outils.compter_arretes_matrice_adjacente(tableau_matrice_adjacente)
+outils.compter_aretes_matrice_adjacente(tableau_matrice_adjacente)
 
 outils.compter_arcs_matrice_adjacente(tableau_matrice_adjacente)
 
 # Appel d'une fonction pour compter le nombre d'arêtes dans le graphe représenté par la liste d'adjacence
-outils.compter_arretes_list_adjacente(tableau_list_adjacente)
+outils.compter_aretes_list_adjacente(tableau_list_adjacente)
 
 outils.compter_arcs_list_adjacente(tableau_list_adjacente)
