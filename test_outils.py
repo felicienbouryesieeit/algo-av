@@ -1,4 +1,3 @@
-# Importation du module contenant des outils pour les opérations sur les graphes
 import outils
 
 # Définition d'une matrice d'adjacence pour un graphe
@@ -27,4 +26,8 @@ outils.compter_arcs_matrice_adjacente(tableau_matrice_adjacente)
 # Appel d'une fonction pour compter le nombre d'arêtes dans le graphe représenté par la liste d'adjacence
 outils.compter_aretes_list_adjacente(tableau_list_adjacente)
 
+# Compte le nombre d'arcs dans le graphe représenté par la liste d'adjacence
 outils.compter_arcs_list_adjacente(tableau_list_adjacente)
+
+# Effectue un parcours en profondeur (Depth-First Search) à partir du nœud 0 (dans un graphe représenté en interne)
+outils.parcours_en_profondeur(1000)

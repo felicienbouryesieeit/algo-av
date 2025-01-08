@@ -1,4 +1,5 @@
 import re
+import pile
 
 # Fonction pour créer et remplir un tableau avec des lignes supplémentaires
 def create_tableau(tableau):
@@ -62,9 +63,10 @@ with open("graphe.txt", "r", encoding="utf-8") as fichier:
 
 # Variables globales pour suivre le nombre de sommets et le titre actuel
 nb_sommet2 = 0
-nb_arcs2=0
+nb_arcs2 = 0
 nb_titre_actuel = 0
-nb_titre_sommet=0
+nb_titre_sommet = 0
+basenumero = 0
 
 som = []
 somint=[]
@@ -72,6 +74,25 @@ adj = []
 adjint=[]
 mat = []
 visite = []
+som_visites=[]
+som_visites2=[]
+
+def lire_graphe_txt():
+    # Ouvrir et lire le fichier    
+    if lignes[0].strip() == "GRAPHE ORIENTE" or lignes[0].strip() == "GRAPHE NON ORIENTE":
+
+        # Vérifie le titre global des sommets
+        if verifier_titre_global(lignes[1]," SOMMETS"): #lignes[1].strip() == nouvelle_chaine.strip()+" SOMMETS" and nouvelle_chaine.strip().isdigit():
+        # Vérifie le titre global des sommets
+            global nb_titre_sommet
+            global nb_titre_actuel
+
+            nb_titre_sommet=nb_titre_actuel
+            verifier_nom_sommet(2)  # Vérifie les noms des sommets  
+        else:
+            erreur(f"\nFormat du titre des sommets invalide.") # Appelle la fonction d'erreur si le format des sommets est incorrect
+    else:
+        erreur(f"\nLe type de graphe est invalide.") # Appelle la fonction d'erreur si le type de graphe est invalide
 
 def verifier_titre_global(texte1,texte2):
     global nb_titre_actuel
@@ -82,7 +103,7 @@ def verifier_titre_global(texte1,texte2):
     nouvelle_chaine = chaine[:-caracterenegatif] 
 
     # Vérifie si la ligne suit le format "<nombre> texte2"
-    estvalide = texte1.strip() == nouvelle_chaine.strip()+texte2 and nouvelle_chaine.strip().isdigit()
+    estvalide = (texte1.strip() == nouvelle_chaine.strip()+texte2 and nouvelle_chaine.strip().isdigit())
     
     # Met à jour la variable globale si valide
     if estvalide:
@@ -146,80 +167,121 @@ def verifier_nom_sommet(i):
             else : 
                 erreur(f"\nLe nombre de sommets ne correspond pas : {nb_sommet2}/{nb_titre_sommet}") # Appelle la fonction d'erreur si les valeurs ne correspondent pas
 
-def lire_graphe_txt():
-    # Ouvrir et lire le fichier    
-    if lignes[0].strip() == "GRAPHE ORIENTE" or lignes[0].strip() == "GRAPHE NON ORIENTE":
 
-        # Vérifie le titre global des sommets
-        if verifier_titre_global(lignes[1]," SOMMETS"): #lignes[1].strip() == nouvelle_chaine.strip()+" SOMMETS" and nouvelle_chaine.strip().isdigit():
-        # Vérifie le titre global des sommets
-            global nb_titre_sommet
-            global nb_titre_actuel
-
-            nb_titre_sommet=nb_titre_actuel
-            verifier_nom_sommet(2)  # Vérifie les noms des sommets  
-        else:
-            erreur(f"\nFormat du titre des sommets invalide.") # Appelle la fonction d'erreur si le format des sommets est incorrect
-    else:
-        erreur(f"\nLe type de graphe est invalide.") # Appelle la fonction d'erreur si le type de graphe est invalide
-
+# Crée une matrice d'adjacence initialisée à 0
 def creer_matrice():
-    print("Som est : "+str(len(som)))
-    global mat
-    matrice = []
-    for i in range(len(som)):
-        
-        matrice2=[]
-        
-        for j in range(len(som)):
-            matrice2.append(0)
-            
-        matrice.append(matrice2)
-    mat = matrice
-    rajouter_les_arcs()
+    try:
+        print("Som est : " + str(len(som)))  # Affiche la taille de la liste 'som'
+        global mat
+        matrice = []
 
+        # Boucle pour initialiser la matrice avec des zéros
+        for i in range(len(som)):
+            matrice2 = []
+            for j in range(len(som)):
+                matrice2.append(0)
+            matrice.append(matrice2)
+        
+        mat = matrice
+        rajouter_les_arcs()
+    except NameError as e:
+        print(f"Erreur : une variable globale nécessaire n'est pas définie ({e}).")
+    except Exception as e:
+        print(f"Erreur inattendue lors de la création de la matrice : {e}")
+
+# Ajoute les arcs à la matrice d'adjacence
 def rajouter_les_arcs():
-    global mat
-    global visite
+    try:
+        global mat
+        global visite
 
-    for i in range(len(adjint)):
-        mat[adjint[i][ visite[0] ]][adjint[i][ visite[1] ]]=1
-    
-    for i in range(len(mat)):
-        print(str(som[i]).strip()+" "+str(mat[i]))
+        # Parcourt la liste des arcs et met à jour la matrice
+        for i in range(len(adjint)):
+            mat[adjint[i][visite[0]]][adjint[i][visite[1]]] = 1
 
-# Appelle la fonction principale pour lire et valider le fichier
+        # Affiche la matrice avec les sommets
+        for i in range(len(mat)):
+            print(str(som[i]).strip() + " " + str(mat[i]))
+    except IndexError as e:
+        print(f"Erreur d'indice lors de l'ajout des arcs : {e}")
+    except NameError as e:
+        print(f"Erreur : une variable globale nécessaire n'est pas définie ({e}).")
+    except Exception as e:
+        print(f"Erreur inattendue lors de l'ajout des arcs : {e}")
+
+# Initialise les données pour le graphe et détermine l'ordre des visites
 def begin_graphe(visite2):
-    global visite
-    if visite2:
-        visite = [0,1]
-    else :
-        visite = [1,0]
-    
-    lire_graphe_txt()
+    try:
+        global visite
+        # Définit l'ordre des visites en fonction du paramètre
+        if visite2:
+            visite = [0, 1]
+        else:
+            visite = [1, 0]
+        
+        lire_graphe_txt()  # Appelle une fonction externe pour lire le graphe
+    except NameError as e:
+        print(f"Erreur : une variable globale ou fonction nécessaire n'est pas définie ({e}).")
+    except Exception as e:
+        print(f"Erreur inattendue dans 'begin_graphe' : {e}")
 
+# Vérifie si un sommet a déjà été visité
+def check_som_visites(index, liste_actuelle):
+    global mat
+    est_valide = True
+    try:
+        for i in range(len(liste_actuelle)):
+            if liste_actuelle[i] == index:
+                est_valide = False
+    except Exception as e:
+        print(f"Erreur lors de la vérification des sommets visités : {e}")
+    return est_valide
 
+# Parcours en profondeur récursif
+def parcours_en_profondeur_2(numero):
+    try:
+        global som_visites
+        global som_visites2
+        global basenumero
+        som_visites.append(numero)
+        boolvar = False
+        numero2 = -1
 
-#
+        # Parcourt les voisins du sommet actuel
+        for i in range(len(mat[numero])):
+            if not boolvar:
+                if mat[numero][i] == 1:
+                    if check_som_visites(i, som_visites) and check_som_visites(i, som_visites2):
+                        boolvar = True
+                        numero2 = i
+        
+        # Si un voisin valide est trouvé, continue le parcours
+        if boolvar:
+            parcours_en_profondeur_2(numero2)
+        else:
+            if len(som_visites2) < 9:
+                som_visites2.append(som_visites[-1])  # Ajoute le dernier sommet visité
+                if len(som_visites) != 1:
+                    som_visites = []
+                    parcours_en_profondeur_2(basenumero)
+                else:
+                    print("Sommets visités : " + str(som_visites2))
+    except IndexError as e:
+        print(f"Erreur d'indice lors du parcours en profondeur : {e}")
+    except Exception as e:
+        print(f"Erreur inattendue dans 'parcours_en_profondeur_2' : {e}")
 
-def parcours_en_profondeur(numéro):
-    
-
-    begin_graphe(False)
-
-    
-    print("Connection en profondeur de : "+str(som[numéro]).strip()+" = "+str(mat[numéro]))
-    nb_visite = 0
-    for i in range(len(mat[numéro])):
-        nb_visite+=mat[numéro][i]
-    print("nombre de visites : "+str(nb_visite))
-    
-#parcours_en_profondeur(4)
-begin_graphe(False)
-
-
-
-
-
-
-
+# Fonction principale pour démarrer le parcours en profondeur
+def parcours_en_profondeur(numero):
+    try:
+        global mat
+        global som_visites
+        global somint
+        global basenumero
+        basenumero = numero
+        begin_graphe(True)
+        parcours_en_profondeur_2(numero)
+    except NameError as e:
+        print(f"Erreur : une variable globale nécessaire n'est pas définie ({e}).")
+    except Exception as e:
+        print(f"Erreur inattendue dans 'parcours_en_profondeur' : {e}")
