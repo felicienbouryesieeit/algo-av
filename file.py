@@ -12,5 +12,5 @@ def defiler(f):
     return f.pop(0)
 
 # Vérifie si la file est vide
-def file(f):
+def estvide(f):
     return len(f) == 0
