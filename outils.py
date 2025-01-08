@@ -49,6 +49,14 @@ def compter_arcs_list_adjacente(liste_adjacence):
 
     print(nb_arcs)
 
+def erreur(message="\nErreur : Format ou données invalides"):
+    # Fonction appelée pour afficher un message d'erreur générique
+    print(message)
+
+# Ouvre le fichier "graphe.txt" en mode lecture et lit toutes les lignes
+#with open("graphe.txt", "r", encoding="utf-8") as fichier:
+with open(r"algo-av/graphe.txt", "r", encoding="utf-8") as fichier:
+    lignes = fichier.readlines()
 
 
 # Variables globales pour suivre le nombre de sommets et le titre actuel
@@ -64,68 +72,6 @@ adjint=[]
 mat = []
 visite = []
 
-def erreur(message="\nErreur : Format ou données invalides"):
-    # Fonction appelée pour afficher un message d'erreur générique
-    print(message)
-
-# Ouvre le fichier "graphe.txt" en mode lecture et lit toutes les lignes
-
-def lire_graphe_format_personnalise():
-    with open("go-40-01 (1).txt", "r", encoding="utf-8") as fichier:
-        lignes = [ligne.strip() for ligne in fichier.readlines()]
-
-    # Vérification du type de graphe
-    if lignes[0] != "GRAPHE ORIENTE":
-        erreur("Le fichier doit commencer par 'GRAPHE ORIENTE'.")
-        return None
-
-    # Lecture du nombre de sommets
-    try:
-        nb_sommets = int(lignes[1].split()[0])
-    except:
-        erreur("La seconde ligne doit contenir '<nombre> SOMMETS'.")
-        return None
-
-    # Vérification et lecture des sommets
-    sommets = []
-    for i in range(2, 2 + nb_sommets):
-        try:
-            sommets.append(int(lignes[i]))
-        except:
-            erreur(f"Sommet invalide à la ligne {i + 1}.")
-            return None
-    if len(sommets) != nb_sommets:
-        erreur("Le nombre de sommets ne correspond pas à l'en-tête.")
-        return None
-
-    # Lecture du nombre d'arcs
-    arcs_ligne = 2 + nb_sommets
-    try:
-        nb_arcs = int(lignes[arcs_ligne].split()[0])
-    except:
-        erreur("La ligne après les sommets doit contenir '<nombre> ARCS'.")
-        return None
-
-    # Lecture des arcs
-    arcs = []
-    for i in range(arcs_ligne + 1, arcs_ligne + 1 + nb_arcs):
-        try:
-            sommet1, sommet2 = map(int, lignes[i].split())
-            arcs.append((sommet1, sommet2))
-        except:
-            erreur(f"Arc invalide à la ligne {i + 1}.")
-            return None
-
-    # Construction de la matrice d'adjacence
-    matrice_adj = [[0 for _ in range(nb_sommets)] for _ in range(nb_sommets)]
-    for sommet1, sommet2 in arcs:
-        if sommet1 < nb_sommets and sommet2 < nb_sommets:
-            matrice_adj[sommet1][sommet2] = 1  # Ajouter un arc orienté
-        else:
-            erreur(f"Arc hors limites : ({sommet1}, {sommet2}).")
-
-    return matrice_adj
-        
 def verifier_titre_global(texte1,texte2):
     global nb_titre_actuel
     chaine = texte1
@@ -155,6 +101,66 @@ def ajouter_adjint2(resultat,index):
             arc1 = j
             
     return arc1
+            
+def verifier_aretes(i):
+    global nb_arcs2
+    
+    pattern = r'(\w+)\s+(\w+)'
+    nb_arcs2 += 1
+    # Recherche des deux mots
+    resultat = re.findall(pattern, lignes[i])
+    print(f"\naretes "+resultat[0][1])
+    adj.append(resultat)
+    ajouter_adjint(resultat)
+
+    if (i<(len(lignes)-1)) :
+    # Affichage des résultats
+        verifier_aretes(i+1)
+    else :
+        if nb_titre_actuel==nb_arcs2:
+            print(f"\nValidation des arêtes réussie : {nb_arcs2}/{nb_titre_actuel}")
+            creer_matrice()
+        else :
+            erreur(f"\nLe nombre d'arêtes ne correspond pas : {nb_arcs2}/{nb_titre_actuel}")
+        
+def verifier_titre_aretes():
+    global nb_arcs2
+    nb_arcs2 = 0
+    verifier_aretes(nb_sommet2+2+1)
+    
+def verifier_nom_sommet(i):
+        global nb_sommet2
+        global nb_titre_sommet
+        if verifier_titre_global(lignes[i]," ARCS") == False:
+            nb_sommet2 = nb_sommet2+1
+            som.append(lignes[i]) 
+            somint.append(i-2)
+            print(f"sommet: "+str(somint[len(somint)-1]))
+            verifier_nom_sommet(i+1)
+                
+        else:
+            # Vérifie si le nombre de sommets correspond au titre
+            if nb_titre_sommet == nb_sommet2:
+                verifier_titre_aretes()
+            else : 
+                erreur(f"\nLe nombre de sommets ne correspond pas : {nb_sommet2}/{nb_titre_sommet}") # Appelle la fonction d'erreur si les valeurs ne correspondent pas
+
+def lire_graphe_txt():
+    # Ouvrir et lire le fichier    
+    if lignes[0].strip() == "GRAPHE ORIENTE" or lignes[0].strip() == "GRAPHE NON ORIENTE":
+
+        # Vérifie le titre global des sommets
+        if verifier_titre_global(lignes[1]," SOMMETS"): #lignes[1].strip() == nouvelle_chaine.strip()+" SOMMETS" and nouvelle_chaine.strip().isdigit():
+        # Vérifie le titre global des sommets
+            global nb_titre_sommet
+            global nb_titre_actuel
+
+            nb_titre_sommet=nb_titre_actuel
+            verifier_nom_sommet(2)  # Vérifie les noms des sommets  
+        else:
+            erreur(f"\nFormat du titre des sommets invalide.") # Appelle la fonction d'erreur si le format des sommets est incorrect
+    else:
+        erreur(f"\nLe type de graphe est invalide.") # Appelle la fonction d'erreur si le type de graphe est invalide
 
 def creer_matrice():
     print("Som est : "+str(len(som)))
@@ -176,16 +182,10 @@ def rajouter_les_arcs():
     global visite
 
     for i in range(len(adjint)):
-        sommet1 = adjint[i][visite[0]]
-        sommet2 = adjint[i][visite[1]]
-        if sommet1 >= len(mat) or sommet2 >= len(mat):
-            print(f"Erreur : sommet hors limites ({sommet1}, {sommet2})")
-            continue
-        mat[sommet1][sommet2] = 1  # Ajouter l'arc
-
-    print("Matrice après ajout des arcs :")
-    for ligne in mat:
-        print(ligne)
+        mat[adjint[i][ visite[0] ]][adjint[i][ visite[1] ]]=1
+    
+    for i in range(len(mat)):
+        print(str(som[i]).strip()+" "+str(mat[i]))
 
 # Appelle la fonction principale pour lire et valider le fichier
 def begin_graphe(visite2):
@@ -195,49 +195,22 @@ def begin_graphe(visite2):
     else :
         visite = [1,0]
     
-    lire_graphe_format_personnalise()
+    lire_graphe_txt()
 
-def parcours_en_profondeur(matrice_adj, sommet_depart):
-    def explorer_sommet(sommet, visites):
-        visites.add(sommet)           # Marque le sommet actuel comme visité
-        resultat.append(sommet)       # Ajoute le sommet au résultat
-        for voisin, est_adjacent in enumerate(matrice_adj[sommet]):
-            # Si le voisin est adjacent et non encore visité, on le visite
-            if est_adjacent == 1 and voisin not in visites:
-                explorer_sommet(voisin, visites)
 
-    resultat = []                     # Liste pour stocker les sommets visités
-    visites = set()                   # Ensemble des sommets déjà visités
 
-    # Lancement du parcours (aucune vérification préalable du sommet ou de la matrice)
-    explorer_sommet(sommet_depart, visites)
+#
 
-    return resultat                   # Retourne la liste des sommets visités
+def parcours_en_profondeur(numéro):
+    
 
-def parcours_en_largeur(matrice_adj, sommet_depart):
-    # Initialisation des variables :
-    # 'visites' pour conserver l'ordre des sommets visités
-    # 'file' pour représenter une file d'attente des sommets à visiter
-    # 'deja_visites' pour éviter de visiter plusieurs fois le même sommet
-    visites = []              # Liste des sommets visités dans l'ordre
-    file = [sommet_depart]    # File d'attente des sommets à explorer
-    deja_visites = set()      # Ensemble des sommets déjà visités
+    begin_graphe(False)
 
-    # Parcours en largeur
-    while file:
-        # Récupère le premier sommet de la file
-        sommet = file.pop(0)
-
-        # Vérifie si le sommet n'a pas encore été visité
-        if sommet not in deja_visites:
-            visites.append(sommet)       # Ajoute le sommet à la liste des visites
-            deja_visites.add(sommet)     # Marque le sommet comme visité
-
-            # Parcourt les voisins du sommet
-            for voisin, est_adjacent in enumerate(matrice_adj[sommet]):
-                # Si le voisin est adjacent et non encore visité, on l'ajoute à la file
-                if est_adjacent == 1 and voisin not in deja_visites:
-                    file.append(voisin)
-
-    return visites
-
+    
+    print("Connection en profondeur de : "+str(som[numéro]).strip()+" = "+str(mat[numéro]))
+    nb_visite = 0
+    for i in range(len(mat[numéro])):
+        nb_visite+=mat[numéro][i]
+    print("nombre de visites : "+str(nb_visite))
+    
+parcours_en_profondeur(4)

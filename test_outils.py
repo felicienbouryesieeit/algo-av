@@ -32,26 +32,3 @@ outils.compter_arcs_list_adjacente(tableau_list_adjacente)
 
 # Lire le graphe depuis le fichier texte
 matrice_adj = lire_graphe_format_personnalise()
-
-def test_parcours_en_profondeur():
-    # Point de départ pour le parcours
-    sommet_depart = 3
-
-    # Exécuter le parcours en profondeur
-    resultat_obtenu = parcours_en_profondeur(matrice_adj, sommet_depart)
-    print(f"Résultat du parcours en profondeur depuis le sommet {sommet_depart} :", resultat_obtenu)
-
-# Lancer le test
-test_parcours_en_profondeur()
-
-def test_parcours_largeur():
-    # Exécuter le parcours en largeur
-    sommet_depart = 2
-    resultat = parcours_en_largeur(matrice_adj, sommet_depart)
-    print(f"Résultat du parcours en largeur depuis le sommet {sommet_depart} :", resultat)
-
-# Lancer le test
-test_parcours_largeur()
-
-
-
