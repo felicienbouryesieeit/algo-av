@@ -1,5 +1,6 @@
 import re
 import pile
+import file
 
 # Fonction pour créer et remplir un tableau avec des lignes supplémentaires
 def create_tableau(tableau):
@@ -225,63 +226,33 @@ def begin_graphe(visite2):
     except Exception as e:
         print(f"Erreur inattendue dans 'begin_graphe' : {e}")
 
-# Vérifie si un sommet a déjà été visité
-def check_som_visites(index, liste_actuelle):
+def voisins (depart):
     global mat
-    est_valide = True
-    try:
-        for i in range(len(liste_actuelle)):
-            if liste_actuelle[i] == index:
-                est_valide = False
-    except Exception as e:
-        print(f"Erreur lors de la vérification des sommets visités : {e}")
-    return est_valide
 
-# Parcours en profondeur récursif
-def parcours_en_profondeur_2(numero):
-    try:
-        global som_visites
-        global som_visites2
-        global basenumero
-        som_visites.append(numero)
-        boolvar = False
-        numero2 = -1
+    list_voisins = []
 
-        # Parcourt les voisins du sommet actuel
-        for i in range(len(mat[numero])):
-            if not boolvar:
-                if mat[numero][i] == 1:
-                    if check_som_visites(i, som_visites) and check_som_visites(i, som_visites2):
-                        boolvar = True
-                        numero2 = i
-        
-        # Si un voisin valide est trouvé, continue le parcours
-        if boolvar:
-            parcours_en_profondeur_2(numero2)
-        else:
-            if len(som_visites2) < 9:
-                som_visites2.append(som_visites[-1])  # Ajoute le dernier sommet visité
-                if len(som_visites) != 1:
-                    som_visites = []
-                    parcours_en_profondeur_2(basenumero)
-                else:
-                    print("Sommets visités : " + str(som_visites2))
-    except IndexError as e:
-        print(f"Erreur d'indice lors du parcours en profondeur : {e}")
-    except Exception as e:
-        print(f"Erreur inattendue dans 'parcours_en_profondeur_2' : {e}")
+    for x in range(len(mat[depart])):
 
-# Fonction principale pour démarrer le parcours en profondeur
-def parcours_en_profondeur(numero):
-    try:
-        global mat
-        global som_visites
-        global somint
-        global basenumero
-        basenumero = numero
-        begin_graphe(True)
-        parcours_en_profondeur_2(numero)
-    except NameError as e:
-        print(f"Erreur : une variable globale nécessaire n'est pas définie ({e}).")
-    except Exception as e:
-        print(f"Erreur inattendue dans 'parcours_en_profondeur' : {e}")
+        if mat[depart][x] == 1 :
+            list_voisins.append(x)
+
+    return list_voisins
+def parcours_en_profondeur(depart):
+
+    begin_graphe(True)
+    global mat
+    res = file.nouvelle_file()
+    av = pile.nouvelle_pile()
+    vu = set()
+
+    pile.empiler(av, depart)
+    while not pile.estvide(av) :
+        cand = pile.depiler(av)
+
+        if not cand in vu :
+            vu.add(cand)
+            file.enfiler(res, cand)
+            for v in voisins(cand):
+                pile.empiler(av, v)
+    return res
+
