@@ -30,7 +30,11 @@ Pour toute question ou problème, veuillez contacter l'équipe de développement
 ## User Stories
 
 Module outils - Fait
+
 Nombre d’arêtes - Fait
+
 Charger graphe - Fait
+
 Parcours en profondeur - Fait
+
 Parcours en largeur - Fait
