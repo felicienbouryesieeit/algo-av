@@ -1,6 +1,4 @@
 import outils
-# Importation du module contenant des outils pour les opérations sur les graphes
-from outils import parcours_en_largeur, parcours_en_profondeur, lire_graphe_format_personnalise
 
 # Définition d'une matrice d'adjacence pour un graphe
 # Chaque ligne/colonne représente un nœud, et une valeur de 1 indique une arête entre les nœuds correspondants
@@ -28,7 +26,8 @@ outils.compter_arcs_matrice_adjacente(tableau_matrice_adjacente)
 # Appel d'une fonction pour compter le nombre d'arêtes dans le graphe représenté par la liste d'adjacence
 outils.compter_aretes_list_adjacente(tableau_list_adjacente)
 
+# Compte le nombre d'arcs dans le graphe représenté par la liste d'adjacence
 outils.compter_arcs_list_adjacente(tableau_list_adjacente)
 
-# Lire le graphe depuis le fichier texte
-matrice_adj = lire_graphe_format_personnalise()
+# Effectue un parcours en profondeur (Depth-First Search) à partir du nœud 0 (dans un graphe représenté en interne)
+outils.parcours_en_profondeur(1000)
