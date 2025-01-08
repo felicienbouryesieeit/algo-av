@@ -1,5 +1,7 @@
 # Réseaux Social Algo-AV
 
+Groupe Félicien et Romain
+
 Ce projet implémente un réseau social représenté sous forme de graphe. Avant d'utiliser le programme, assurez-vous de renommer votre fichier de graphe en `graphe.txt` et de respecter le format suivant.
 
 ## Format du fichier `graphe.txt`
@@ -24,3 +26,15 @@ Le fichier `graphe.txt` doit respecter le format suivant :
 ## Contact
 
 Pour toute question ou problème, veuillez contacter l'équipe de développement.
+
+## User Stories
+
+Module outils - Fait
+
+Nombre d’arêtes - Fait
+
+Charger graphe - Fait
+
+Parcours en profondeur - Fait
+
+Parcours en largeur - Fait
