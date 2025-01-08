@@ -71,50 +71,55 @@ def erreur(message="\nErreur : Format ou données invalides"):
 # Ouvre le fichier "graphe.txt" en mode lecture et lit toutes les lignes
 
 def lire_graphe_format_personnalise():
-    with open("go-40-01 (1).txt", "r", encoding="utf-8") as fichier:
+    with open("graphe.txt", "r", encoding="utf-8") as fichier:
         lignes = [ligne.strip() for ligne in fichier.readlines()]
 
     # Vérification du type de graphe
-    if lignes[0] != "GRAPHE ORIENTE":
+    if not lignes or lignes[0] != "GRAPHE ORIENTE":
         erreur("Le fichier doit commencer par 'GRAPHE ORIENTE'.")
         return None
 
     # Lecture du nombre de sommets
-    try:
-        nb_sommets = int(lignes[1].split()[0])
-    except:
+    if len(lignes) < 2 or not lignes[1].split()[0].isdigit():
         erreur("La seconde ligne doit contenir '<nombre> SOMMETS'.")
         return None
+    nb_sommets = int(lignes[1].split()[0])
 
     # Vérification et lecture des sommets
+    if len(lignes) < 2 + nb_sommets:
+        erreur("Nombre insuffisant de lignes pour définir les sommets.")
+        return None
     sommets = []
     for i in range(2, 2 + nb_sommets):
-        try:
-            sommets.append(int(lignes[i]))
-        except:
+        if not lignes[i].isdigit():
             erreur(f"Sommet invalide à la ligne {i + 1}.")
             return None
+        sommets.append(int(lignes[i]))
+
+    # Vérification du nombre de sommets lu
     if len(sommets) != nb_sommets:
         erreur("Le nombre de sommets ne correspond pas à l'en-tête.")
         return None
 
     # Lecture du nombre d'arcs
     arcs_ligne = 2 + nb_sommets
-    try:
-        nb_arcs = int(lignes[arcs_ligne].split()[0])
-    except:
+    if len(lignes) <= arcs_ligne or not lignes[arcs_ligne].split()[0].isdigit():
         erreur("La ligne après les sommets doit contenir '<nombre> ARCS'.")
         return None
+    nb_arcs = int(lignes[arcs_ligne].split()[0])
 
     # Lecture des arcs
     arcs = []
+    if len(lignes) < arcs_ligne + 1 + nb_arcs:
+        erreur("Nombre insuffisant de lignes pour définir les arcs.")
+        return None
     for i in range(arcs_ligne + 1, arcs_ligne + 1 + nb_arcs):
-        try:
-            sommet1, sommet2 = map(int, lignes[i].split())
-            arcs.append((sommet1, sommet2))
-        except:
+        parties = lignes[i].split()
+        if len(parties) != 2 or not all(partie.isdigit() for partie in parties):
             erreur(f"Arc invalide à la ligne {i + 1}.")
             return None
+        sommet1, sommet2 = map(int, parties)
+        arcs.append((sommet1, sommet2))
 
     # Construction de la matrice d'adjacence
     matrice_adj = [[0 for _ in range(nb_sommets)] for _ in range(nb_sommets)]
@@ -125,6 +130,7 @@ def lire_graphe_format_personnalise():
             erreur(f"Arc hors limites : ({sommet1}, {sommet2}).")
 
     return matrice_adj
+
         
 def verifier_titre_global(texte1,texte2):
     global nb_titre_actuel
