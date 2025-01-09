@@ -42,3 +42,9 @@ Parcours en largeur - Fait
 Communauté - Fait
 
 Top influenceur - Fait
+
+Chemin minimum - Fait
+
+Temps de propagation - En cours
+
+Génération de graphes - À venir
