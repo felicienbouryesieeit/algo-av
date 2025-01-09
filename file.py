@@ -3,7 +3,7 @@ def nouvelle_file():
     return list()
 
 # Ajout d'un élément à la fin de la file
-def enfiler(f, e):
+def emfiler(f, e):
     f.append(e)
 
 # Retrait du premier élément de la file
@@ -12,5 +12,5 @@ def defiler(f):
     return f.pop(0)
 
 # Vérifie si la file est vide
-def file(f):
+def estvide(f):
     return len(f) == 0

@@ -1,4 +1,3 @@
-
 # Crée une nouvelle pile
 def nouvelle_pile():
     return list()
@@ -13,6 +12,6 @@ def depiler(p):
     return p.pop()
 
 # Vérifie si la pile est vide
-def pile_vide(p):
+def estvide(p):
     return len(p) == 0
 
