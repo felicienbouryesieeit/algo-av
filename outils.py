@@ -237,9 +237,9 @@ def voisins (depart):
             list_voisins.append(x)
 
     return list_voisins
-def parcours_en_profondeur(depart):
+def parcours_en_profondeur2(depart):
 
-    begin_graphe(True)
+    
     global mat
     res = file.nouvelle_file()
     av = pile.nouvelle_pile()
@@ -256,3 +256,21 @@ def parcours_en_profondeur(depart):
                 pile.empiler(av, v)
     return res
 
+
+def verifier_une_communautee():
+    global somint
+    begin_graphe(True)
+    une_communaute=False
+    for i in range(len(somint)):
+        res = parcours_en_profondeur2(i)
+        if (len(res)==len(somint)) : 
+            une_communaute=True
+    
+    print("une communauté : "+str(une_communaute))
+    return une_communaute
+        
+def parcours_en_profondeur(i):
+    begin_graphe(True)
+    parcours_en_profondeur2(i)
+
+dodo = verifier_une_communautee()
