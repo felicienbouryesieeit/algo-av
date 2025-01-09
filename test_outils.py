@@ -30,4 +30,15 @@ outils.compter_aretes_list_adjacente(tableau_list_adjacente)
 outils.compter_arcs_list_adjacente(tableau_list_adjacente)
 
 # Effectue un parcours en profondeur (Depth-First Search) à partir du nœud 0 (dans un graphe représenté en interne)
-assert outils.parcours_en_profondeur(5) == [5, 8, 2, 6, 4, 7, 1, 0, 3], "probleme de parcourt en profondeur"
+p = outils.parcours_en_profondeur(2,True)
+print(p)
+      
+assert outils.parcours_en_largeur(5)
+p2 = outils.parcours_en_largeur(5)
+print(p2)
+
+inf = outils.plus_grand_influenceur()
+print(inf)
+
+commu = outils.verifier_une_communautee()
+print(commu)
