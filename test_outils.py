@@ -30,15 +30,24 @@ outils.compter_aretes_list_adjacente(tableau_list_adjacente)
 outils.compter_arcs_list_adjacente(tableau_list_adjacente)
 
 # Effectue un parcours en profondeur (Depth-First Search) à partir du nœud 0 (dans un graphe représenté en interne)
-p = outils.parcours_en_profondeur(2,True)
-print(p)
+#p = outils.parcours_en_profondeur(2,True)
+#print(p)
       
-assert outils.parcours_en_largeur(5)
-p2 = outils.parcours_en_largeur(5)
-print(p2)
+#assert outils.parcours_en_largeur(5)
+#p2 = outils.parcours_en_largeur(5)
+#print(p2)
 
-inf = outils.plus_grand_influenceur()
-print(inf)
+#inf = outils.plus_grand_influenceur()
+#print(inf)
 
-commu = outils.verifier_une_communautee()
-print(commu)
+#commu = outils.verifier_une_communautee()
+#print(commu)
+
+source = 1
+destination = 5
+
+chemin = outils.chemin_minimum(source, destination)
+if chemin:
+    print(f"Le chemin minimum de {source} à {destination} est : {chemin}")
+else:
+    print(f"Aucun chemin trouvé de {source} à {destination}.")
