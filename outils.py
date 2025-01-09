@@ -132,7 +132,7 @@ def verifier_aretes(i):
     nb_arcs2 += 1
     # Recherche des deux mots
     resultat = re.findall(pattern, lignes[i])
-    print(f"\naretes "+resultat[0][1])
+    #print(f"\naretes "+resultat[0][1])
     adj.append(resultat)
     ajouter_adjint(resultat)
 
@@ -158,7 +158,7 @@ def verifier_nom_sommet(i):
             nb_sommet2 = nb_sommet2+1
             som.append(lignes[i]) 
             somint.append(i-2)
-            print(f"sommet: "+str(somint[len(somint)-1]))
+            #print(f"sommet: "+str(somint[len(somint)-1]))
             verifier_nom_sommet(i+1)
                 
         else:
@@ -166,7 +166,7 @@ def verifier_nom_sommet(i):
             if nb_titre_sommet == nb_sommet2:
                 verifier_titre_aretes()
             else : 
-                erreur(f"\nLe nombre de sommets ne correspond pas : {nb_sommet2}/{nb_titre_sommet}") # Appelle la fonction d'erreur si les valeurs ne correspondent pas
+                print(f"\nLe nombre de sommets ne correspond pas : {nb_sommet2}/{nb_titre_sommet}") # Appelle la fonction d'erreur si les valeurs ne correspondent pas
 
 
 # Crée une matrice d'adjacence initialisée à 0
@@ -231,14 +231,18 @@ def voisins (depart):
 
     list_voisins = []
 
-    for x in range(len(mat[depart])):
+
+    for x in range(len(mat[depart])) :
 
         if mat[depart][x] == 1 :
             list_voisins.append(x)
+    print("pirate"+str(depart) + " " + str(list_voisins))
 
     return list_voisins
-def parcours_en_profondeur2(depart):
 
+def parcours_en_profondeur(depart,havebegingraphe):
+    if havebegingraphe == True:
+        begin_graphe(True)
     
     global mat
     res = file.nouvelle_file()
@@ -246,31 +250,66 @@ def parcours_en_profondeur2(depart):
     vu = set()
 
     pile.empiler(av, depart)
-    while not pile.estvide(av) :
+    while not pile.estvide(av):
         cand = pile.depiler(av)
 
         if not cand in vu :
             vu.add(cand)
-            file.enfiler(res, cand)
+            file.emfiler(res, cand)
             for v in voisins(cand):
                 pile.empiler(av, v)
     return res
 
+def parcours_en_largeur(depart):
+    begin_graphe(True)
+    global mat
+    res = file.nouvelle_file()
+    av = file.nouvelle_file()
+    vu = set()
+
+    vu.add(depart)
+    file.emfiler(av, depart)
+
+    while not file.estvide(av):
+        cand = file.defiler(av)
+        res.append(cand)
+
+        voisinsliste=voisins(cand)
+
+        #print("voisinbis"+str(res) + " "+ str(cand) )
+
+        for voisin in voisinsliste:
+            
+            if voisin not in vu:
+                vu.add(voisin)
+                file.emfiler(av, voisin)
+    return res
 
 def verifier_une_communautee():
     global somint
     begin_graphe(True)
     une_communaute=False
     for i in range(len(somint)):
-        res = parcours_en_profondeur2(i)
+        res = parcours_en_profondeur(i, False)
         if (len(res)==len(somint)) : 
             une_communaute=True
-    
-    print("une communauté : "+str(une_communaute))
-    return une_communaute
+        return une_communaute
         
-def parcours_en_profondeur(i):
+def plus_grand_influenceur() : 
+    global mat
+    plus_grand_influenceur_liens_int = 0
+    plus_grand_influenceur_int=0
     begin_graphe(True)
-    parcours_en_profondeur2(i)
+    for i in range(len(mat)):
+        current_influenceur=0
+        for i2 in range(len(mat)):
+            current_influenceur= current_influenceur + mat[i][i2]
+        if current_influenceur>plus_grand_influenceur_liens_int:
+            plus_grand_influenceur_liens_int=current_influenceur
+            plus_grand_influenceur_int=i
+    return plus_grand_influenceur_int
 
-dodo = verifier_une_communautee()
+
+
+res2 = parcours_en_largeur(0)
+print(res2)
