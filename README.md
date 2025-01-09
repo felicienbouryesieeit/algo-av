@@ -38,3 +38,7 @@ Charger graphe - Fait
 Parcours en profondeur - Fait
 
 Parcours en largeur - Fait
+
+Communauté - Fait
+
+Top influenceur - Fait
