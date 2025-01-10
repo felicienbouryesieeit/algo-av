@@ -236,7 +236,7 @@ def voisins (depart):
 
         if mat[depart][x] == 1 :
             list_voisins.append(x)
-    print("pirate"+str(depart) + " " + str(list_voisins))
+    
 
     return list_voisins
 
@@ -260,9 +260,16 @@ def parcours_en_profondeur(depart,havebegingraphe):
                 pile.empiler(av, v)
     return res
 
-def parcours_en_largeur(depart):
+def parcours_en_largeur(depart,chercheunnombre):
     begin_graphe(True)
     global mat
+    global chemin_de_propagation
+    global chemin_de_propagation2
+    global destination
+    global destination_global
+    
+    chemin_de_propagation2=[-1,-1,-1]
+
     res = file.nouvelle_file()
     av = file.nouvelle_file()
     vu = set()
@@ -270,19 +277,92 @@ def parcours_en_largeur(depart):
     vu.add(depart)
     file.emfiler(av, depart)
 
+    nombre_a_ete_trouve=False
+
     while not file.estvide(av):
         cand = file.defiler(av)
         res.append(cand)
 
         voisinsliste=voisins(cand)
+        
+        
+        
 
-        #print("voisinbis"+str(res) + " "+ str(cand) )
-
-        for voisin in voisinsliste:
+        if (chercheunnombre==True) and (nombre_a_ete_trouve==False) :
             
-            if voisin not in vu:
-                vu.add(voisin)
-                file.emfiler(av, voisin)
+            
+            chemin_de_propagation3 = []
+
+            chemin_de_propagation2[0]=cand
+            print("base : "+str(cand))
+
+            for voisin in voisinsliste:
+                voisinsliste2 = voisins(voisin)
+                print("resultat1 : "+str(voisinsliste))
+                if (voisin==destination) :
+                    chemin_de_propagation2[1]=destination
+                    nombre_a_ete_trouve=True
+
+                    
+                    chemin_de_propagation3.append(voisin)
+
+                for voisin2 in voisinsliste2:
+                    print("resultat 2 :"+ str(voisinsliste2))
+                    if  (voisin2==destination) and (chemin_de_propagation2[1]==-1) :
+
+                        
+                        
+                        chemin_de_propagation3.append(voisin)
+                        chemin_de_propagation3.append(voisin2)
+
+                        nombre_a_ete_trouve=True
+
+                if voisin not in vu:
+                    vu.add(voisin)
+                    file.emfiler(av, voisin)
+    if (nombre_a_ete_trouve==True) :
+
+        
+
+        chemin_de_propagation2_debut=chemin_de_propagation2[0]
+        destination=chemin_de_propagation2_debut
+
+        #chemin_de_propagation.pop(0)
+
+        
+
+        #chemin_de_propagation3= chemin_de_propagation3 + chemin_de_propagation
+
+        #chemin_de_propagation3.pop()
+
+
+        chemin_de_propagation = chemin_de_propagation3 + chemin_de_propagation 
+
+        chemin_de_propagation4=[]
+        limite_propagation=False
+    
+        for a in chemin_de_propagation:
+            
+            
+            if limite_propagation==False:
+                chemin_de_propagation4.append(a)
+            
+            if (a==destination_global):
+                limite_propagation=True
+        
+        
+        chemin_de_propagation=chemin_de_propagation4
+        
+
+        if (chemin_de_propagation2_debut!=depart) :
+            parcours_en_largeur(depart,True)
+        else : 
+            chemin_de_propagation4=chemin_de_propagation
+            chemin_de_propagation=[]
+            chemin_de_propagation.append(depart)
+            chemin_de_propagation=chemin_de_propagation+chemin_de_propagation4
+
+
     return res
 
 def verifier_une_communautee():
@@ -311,5 +391,33 @@ def plus_grand_influenceur() :
 
 
 
-res2 = parcours_en_largeur(0)
-print(res2)
+#res2 = parcours_en_largeur(0,False)
+#print(res2)
+
+
+chemin_de_propagation=[]
+chemin_de_propagation2=[]
+destination=0
+destination_global=0
+def propagation(depart,destination2):
+    global chemin_de_propagation
+    global chemin_de_propagation2
+    global destination
+    global destination_global
+    destination=destination2
+    destination_global=destination
+    chemin_de_propagation=[]
+    #print("chien"+str(chemin_de_propagation2[2]))
+    parcours_en_largeur(depart,True)
+    return chemin_de_propagation
+
+
+
+
+def temps_de_propagation(depart,destination2):
+    chemin = propagation(  depart,destination2)
+    durée=(len(chemin)-1)*5
+    return durée
+
+toto = temps_de_propagation(0,2)
+print("temps de propagation "+str(toto))

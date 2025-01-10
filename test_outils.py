@@ -33,8 +33,8 @@ outils.compter_arcs_list_adjacente(tableau_list_adjacente)
 p = outils.parcours_en_profondeur(2,True)
 print(p)
       
-assert outils.parcours_en_largeur(5)
-p2 = outils.parcours_en_largeur(5)
+assert outils.parcours_en_largeur(5,False)
+p2 = outils.parcours_en_largeur(5,False)
 print(p2)
 
 inf = outils.plus_grand_influenceur()
@@ -42,3 +42,10 @@ print(inf)
 
 commu = outils.verifier_une_communautee()
 print(commu)
+
+prop = outils.propagation(0,2)
+dur = outils.temps_de_propagation(0,2)
+
+print("durée: "+str(dur)+" minutes ")
+
+print("chemin le plus cours : "+str(prop))
