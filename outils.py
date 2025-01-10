@@ -113,7 +113,7 @@ def verifier_titre_global(texte1,texte2):
 
 def ajouter_adjint(resultat):
     adjint_actuel=[ajouter_adjint2(resultat,0),ajouter_adjint2(resultat,1)]
-    #print("adjint actuel : "+str(adjint_actuel))
+    print("adjint actuel : "+str(adjint_actuel))
     adjint.append(adjint_actuel)
 
 def ajouter_adjint2(resultat,index):
@@ -141,7 +141,7 @@ def verifier_aretes(i):
         verifier_aretes(i+1)
     else :
         if nb_titre_actuel==nb_arcs2:
-            #print(f"\nValidation des arêtes réussie : {nb_arcs2}/{nb_titre_actuel}")
+            print(f"\nValidation des arêtes réussie : {nb_arcs2}/{nb_titre_actuel}")
             creer_matrice()
         else :
             erreur(f"\nLe nombre d'arêtes ne correspond pas : {nb_arcs2}/{nb_titre_actuel}")
@@ -172,7 +172,7 @@ def verifier_nom_sommet(i):
 # Crée une matrice d'adjacence initialisée à 0
 def creer_matrice():
     try:
-        #print("Som est : " + str(len(som)))  # Affiche la taille de la liste 'som'
+        print("Som est : " + str(len(som)))  # Affiche la taille de la liste 'som'
         global mat
         matrice = []
 
@@ -201,8 +201,8 @@ def rajouter_les_arcs():
             mat[adjint[i][visite[0]]][adjint[i][visite[1]]] = 1
 
         # Affiche la matrice avec les sommets
-        #for i in range(len(mat)):
-            #print(str(som[i]).strip() + " " + str(mat[i]))
+        for i in range(len(mat)):
+            print(str(som[i]).strip() + " " + str(mat[i]))
     except IndexError as e:
         print(f"Erreur d'indice lors de l'ajout des arcs : {e}")
     except NameError as e:
@@ -236,7 +236,7 @@ def voisins (depart):
 
         if mat[depart][x] == 1 :
             list_voisins.append(x)
-    #print("pirate"+str(depart) + " " + str(list_voisins))
+    
 
     return list_voisins
 
@@ -260,9 +260,16 @@ def parcours_en_profondeur(depart,havebegingraphe):
                 pile.empiler(av, v)
     return res
 
-def parcours_en_largeur(depart):
+def parcours_en_largeur(depart,chercheunnombre):
     begin_graphe(True)
     global mat
+    global chemin_de_propagation
+    global chemin_de_propagation2
+    global destination
+    global destination_global
+    
+    chemin_de_propagation2=[-1,-1,-1]
+
     res = file.nouvelle_file()
     av = file.nouvelle_file()
     vu = set()
@@ -270,19 +277,92 @@ def parcours_en_largeur(depart):
     vu.add(depart)
     file.emfiler(av, depart)
 
+    nombre_a_ete_trouve=False
+
     while not file.estvide(av):
         cand = file.defiler(av)
         res.append(cand)
 
         voisinsliste=voisins(cand)
+        
+        
+        
 
-        #print("voisinbis"+str(res) + " "+ str(cand) )
-
-        for voisin in voisinsliste:
+        if (chercheunnombre==True) and (nombre_a_ete_trouve==False) :
             
-            if voisin not in vu:
-                vu.add(voisin)
-                file.emfiler(av, voisin)
+            
+            chemin_de_propagation3 = []
+
+            chemin_de_propagation2[0]=cand
+            print("base : "+str(cand))
+
+            for voisin in voisinsliste:
+                voisinsliste2 = voisins(voisin)
+                print("resultat1 : "+str(voisinsliste))
+                if (voisin==destination) :
+                    chemin_de_propagation2[1]=destination
+                    nombre_a_ete_trouve=True
+
+                    
+                    chemin_de_propagation3.append(voisin)
+
+                for voisin2 in voisinsliste2:
+                    print("resultat 2 :"+ str(voisinsliste2))
+                    if  (voisin2==destination) and (chemin_de_propagation2[1]==-1) :
+
+                        
+                        
+                        chemin_de_propagation3.append(voisin)
+                        chemin_de_propagation3.append(voisin2)
+
+                        nombre_a_ete_trouve=True
+
+                if voisin not in vu:
+                    vu.add(voisin)
+                    file.emfiler(av, voisin)
+    if (nombre_a_ete_trouve==True) :
+
+        
+
+        chemin_de_propagation2_debut=chemin_de_propagation2[0]
+        destination=chemin_de_propagation2_debut
+
+        #chemin_de_propagation.pop(0)
+
+        
+
+        #chemin_de_propagation3= chemin_de_propagation3 + chemin_de_propagation
+
+        #chemin_de_propagation3.pop()
+
+
+        chemin_de_propagation = chemin_de_propagation3 + chemin_de_propagation 
+
+        chemin_de_propagation4=[]
+        limite_propagation=False
+    
+        for a in chemin_de_propagation:
+            
+            
+            if limite_propagation==False:
+                chemin_de_propagation4.append(a)
+            
+            if (a==destination_global):
+                limite_propagation=True
+        
+        
+        chemin_de_propagation=chemin_de_propagation4
+        
+
+        if (chemin_de_propagation2_debut!=depart) :
+            parcours_en_largeur(depart,True)
+        else : 
+            chemin_de_propagation4=chemin_de_propagation
+            chemin_de_propagation=[]
+            chemin_de_propagation.append(depart)
+            chemin_de_propagation=chemin_de_propagation+chemin_de_propagation4
+
+
     return res
 
 def verifier_une_communautee():
@@ -309,50 +389,35 @@ def plus_grand_influenceur() :
             plus_grand_influenceur_int=i
     return plus_grand_influenceur_int
 
-res2 = parcours_en_largeur(0)
+
+
+#res2 = parcours_en_largeur(0,False)
 #print(res2)
 
-def chemin_minimum(source, destination):
-    # Définition de la fonction pour trouver le chemin minimum entre un sommet source et une destination.
-    global mat
-    nb_sommets = len(mat)
-    # Calcul du nombre de sommets dans le graphe à partir de la taille de la matrice.
 
-    if source < 0 or source >= nb_sommets or destination < 0 or destination >= nb_sommets:
-        # Vérification si les indices source et destination sont valides (dans les limites de la matrice).
-        return None
-        # Retourne `None` si les indices sont invalides.
+chemin_de_propagation=[]
+chemin_de_propagation2=[]
+destination=0
+destination_global=0
+def propagation(depart,destination2):
+    global chemin_de_propagation
+    global chemin_de_propagation2
+    global destination
+    global destination_global
+    destination=destination2
+    destination_global=destination
+    chemin_de_propagation=[]
+    #print("chien"+str(chemin_de_propagation2[2]))
+    parcours_en_largeur(depart,True)
+    return chemin_de_propagation
 
-    file_attente = [[source]]
-    # Initialisation de la file d'attente avec un chemin contenant uniquement le sommet source.
-    visites = [False] * nb_sommets
-    # Création d'une liste pour suivre les sommets visités, initialisée à `False`.
 
-    visites[source] = True
-    # Marque le sommet source comme visité.
 
-    while file_attente:
-        # Boucle tant que la file d'attente n'est pas vide.
-        chemin_actuel = file_attente.pop(0)
-        # Récupération et suppression du premier chemin dans la file d'attente.
-        sommet_actuel = chemin_actuel[-1]
-        # Dernier sommet du chemin actuel, représentant le sommet exploré.
 
-        if sommet_actuel == destination:
-            # Si le sommet actuel est le sommet de destination :
-            return chemin_actuel
-            # Retourne le chemin trouvé.
+def temps_de_propagation(depart,destination2):
+    chemin = propagation(  depart,destination2)
+    durée=(len(chemin)-1)*5
+    return durée
 
-        for voisin, arc in enumerate(mat[sommet_actuel]):
-            # Parcourt les voisins du sommet actuel dans la matrice d'adjacence.
-            if arc == 1 and not visites[voisin]:
-                # Si un voisin est connecté (arc == 1) et n'a pas encore été visité :
-                nouveau_chemin = chemin_actuel + [voisin]
-                # Création d'un nouveau chemin en ajoutant ce voisin au chemin actuel.
-                file_attente.append(nouveau_chemin)
-                # Ajout du nouveau chemin à la file d'attente.
-                visites[voisin] = True
-                # Marque ce voisin comme visité.
-
-    return None
-    # Si aucun chemin n'est trouvé jusqu'à la destination, retourne `None`.
+#toto = temps_de_propagation(0,2)
+#print("temps de propagation "+str(toto))
