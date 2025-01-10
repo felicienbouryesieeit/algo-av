@@ -68,6 +68,8 @@ nb_arcs2 = 0
 nb_titre_actuel = 0
 nb_titre_sommet = 0
 basenumero = 0
+destination = 0
+destination_global = 0
 
 som = []
 somint=[]
@@ -75,10 +77,20 @@ adj = []
 adjint=[]
 mat = []
 visite = []
-som_visites=[]
-som_visites2=[]
+som_visites = []
+som_visites2 = []
+chemin_de_propagation = []
+chemin_de_propagation2 = []
 
 def lire_graphe_txt():
+    global som
+    global somint
+    global adj
+    global adjint
+    adjint=[]
+    adj=[]
+    somint=[]
+    som=[]
     # Ouvrir et lire le fichier    
     if lignes[0].strip() == "GRAPHE ORIENTE" or lignes[0].strip() == "GRAPHE NON ORIENTE":
 
@@ -113,7 +125,7 @@ def verifier_titre_global(texte1,texte2):
 
 def ajouter_adjint(resultat):
     adjint_actuel=[ajouter_adjint2(resultat,0),ajouter_adjint2(resultat,1)]
-    print("adjint actuel : "+str(adjint_actuel))
+    #print("adjint actuel : "+str(adjint_actuel))
     adjint.append(adjint_actuel)
 
 def ajouter_adjint2(resultat,index):
@@ -132,7 +144,6 @@ def verifier_aretes(i):
     nb_arcs2 += 1
     # Recherche des deux mots
     resultat = re.findall(pattern, lignes[i])
-    #print(f"\naretes "+resultat[0][1])
     adj.append(resultat)
     ajouter_adjint(resultat)
 
@@ -141,7 +152,7 @@ def verifier_aretes(i):
         verifier_aretes(i+1)
     else :
         if nb_titre_actuel==nb_arcs2:
-            print(f"\nValidation des arêtes réussie : {nb_arcs2}/{nb_titre_actuel}")
+            erreur(f"\nValidation des arêtes réussie : {nb_arcs2}/{nb_titre_actuel}")
             creer_matrice()
         else :
             erreur(f"\nLe nombre d'arêtes ne correspond pas : {nb_arcs2}/{nb_titre_actuel}")
@@ -158,21 +169,19 @@ def verifier_nom_sommet(i):
             nb_sommet2 = nb_sommet2+1
             som.append(lignes[i]) 
             somint.append(i-2)
-            #print(f"sommet: "+str(somint[len(somint)-1]))
             verifier_nom_sommet(i+1)
                 
         else:
             # Vérifie si le nombre de sommets correspond au titre
             if nb_titre_sommet == nb_sommet2:
                 verifier_titre_aretes()
-            else : 
-                print(f"\nLe nombre de sommets ne correspond pas : {nb_sommet2}/{nb_titre_sommet}") # Appelle la fonction d'erreur si les valeurs ne correspondent pas
+            #else : 
+                #erreur(f"\nLe nombre de sommets ne correspond pas : {nb_sommet2}/{nb_titre_sommet}") # Appelle la fonction d'erreur si les valeurs ne correspondent pas
 
 
 # Crée une matrice d'adjacence initialisée à 0
 def creer_matrice():
     try:
-        print("Som est : " + str(len(som)))  # Affiche la taille de la liste 'som'
         global mat
         matrice = []
 
@@ -186,9 +195,9 @@ def creer_matrice():
         mat = matrice
         rajouter_les_arcs()
     except NameError as e:
-        print(f"Erreur : une variable globale nécessaire n'est pas définie ({e}).")
+        erreur(f"Erreur : une variable globale nécessaire n'est pas définie ({e}).")
     except Exception as e:
-        print(f"Erreur inattendue lors de la création de la matrice : {e}")
+        erreur(f"Erreur inattendue lors de la création de la matrice : {e}")
 
 # Ajoute les arcs à la matrice d'adjacence
 def rajouter_les_arcs():
@@ -204,11 +213,11 @@ def rajouter_les_arcs():
         for i in range(len(mat)):
             print(str(som[i]).strip() + " " + str(mat[i]))
     except IndexError as e:
-        print(f"Erreur d'indice lors de l'ajout des arcs : {e}")
+        erreur(f"Erreur d'indice lors de l'ajout des arcs : {e}")
     except NameError as e:
-        print(f"Erreur : une variable globale nécessaire n'est pas définie ({e}).")
+        erreur(f"Erreur : une variable globale nécessaire n'est pas définie ({e}).")
     except Exception as e:
-        print(f"Erreur inattendue lors de l'ajout des arcs : {e}")
+        erreur(f"Erreur inattendue lors de l'ajout des arcs : {e}")
 
 # Initialise les données pour le graphe et détermine l'ordre des visites
 def begin_graphe(visite2):
@@ -219,149 +228,145 @@ def begin_graphe(visite2):
             visite = [0, 1]
         else:
             visite = [1, 0]
-        
         lire_graphe_txt()  # Appelle une fonction externe pour lire le graphe
     except NameError as e:
-        print(f"Erreur : une variable globale ou fonction nécessaire n'est pas définie ({e}).")
+        erreur(f"Erreur : une variable globale ou fonction nécessaire n'est pas définie ({e}).")
     except Exception as e:
-        print(f"Erreur inattendue dans 'begin_graphe' : {e}")
+        erreur(f"Erreur inattendue dans 'begin_graphe' : {e}")
 
 def voisins (depart):
     global mat
 
     list_voisins = []
 
-
     for x in range(len(mat[depart])) :
 
         if mat[depart][x] == 1 :
             list_voisins.append(x)
-    
-
     return list_voisins
 
-def parcours_en_profondeur(depart,havebegingraphe):
-    if havebegingraphe == True:
-        begin_graphe(True)
-    
-    global mat
-    res = file.nouvelle_file()
-    av = pile.nouvelle_pile()
-    vu = set()
+def parcours_en_profondeur(depart, havebegingraphe):    
+    # Vérifie si le graphe doit être initialisé.
+    if havebegingraphe:
+        begin_graphe(True)  # Initialisation du graphe si nécessaire.
 
-    pile.empiler(av, depart)
-    while not pile.estvide(av):
-        cand = pile.depiler(av)
+    # Vérifie si le sommet de départ est valide.
+     
+        # Déclarations globales et initialisation des structures nécessaires.
+        global mat  # Matrice d'adjacence ou autre structure globale.
+    res = file.nouvelle_file()  # Création d'une nouvelle file pour stocker le résultat.
+    av = pile.nouvelle_pile()  # Création d'une nouvelle pile pour gérer le parcours.
+    vu = set()  # Ensemble des sommets déjà visités.
+    if len(somint) > depart: 
+        # Empile le sommet de départ pour commencer le parcours.
+        pile.empiler(av, depart)
 
-        if not cand in vu :
-            vu.add(cand)
-            file.emfiler(res, cand)
-            for v in voisins(cand):
-                pile.empiler(av, v)
+        # Boucle principale du parcours en profondeur.
+        while not pile.estvide(av):
+            cand = pile.depiler(av)  # Dépile le sommet courant.
+
+            # Si le sommet n'a pas encore été visité.
+            if cand not in vu:
+                vu.add(cand)  # Marque le sommet comme visité.
+                file.emfiler(res, cand)  # Ajoute le sommet à la file des résultats.
+
+                # Ajoute les voisins non visités à la pile.
+                for v in voisins(cand):
+                    pile.empiler(av, v)
+    else:
+        # Message d'erreur explicite si le sommet de départ est invalide.
+        erreur(f"Erreur : Le sommet de départ n'est pas valide ou n'existe pas dans le graphe.")
+
+    # Retourne la file contenant les sommets visités.
     return res
 
-def parcours_en_largeur(depart,chercheunnombre):
-    begin_graphe(True)
+def parcours_en_largeur(depart,chercheunnombre,havebegingraphe):
+    if havebegingraphe:
+        begin_graphe(True)
     global mat
     global chemin_de_propagation
     global chemin_de_propagation2
     global destination
     global destination_global
     
+    
     chemin_de_propagation2=[-1,-1,-1]
 
     res = file.nouvelle_file()
     av = file.nouvelle_file()
     vu = set()
+    if len(somint) > depart: 
+        vu.add(depart)
+        file.emfiler(av, depart)
 
-    vu.add(depart)
-    file.emfiler(av, depart)
+        nombre_a_ete_trouve=False
 
-    nombre_a_ete_trouve=False
+        while not file.estvide(av):
+            cand = file.defiler(av)
+            res.append(cand)
 
-    while not file.estvide(av):
-        cand = file.defiler(av)
-        res.append(cand)
-
-        voisinsliste=voisins(cand)
-        
-        
-        
-
-        if (chercheunnombre==True) and (nombre_a_ete_trouve==False) :
+            voisinsliste=voisins(cand)
             
-            
-            chemin_de_propagation3 = []
-
-            chemin_de_propagation2[0]=cand
-            print("base : "+str(cand))
-
             for voisin in voisinsliste:
-                voisinsliste2 = voisins(voisin)
-                print("resultat1 : "+str(voisinsliste))
-                if (voisin==destination) :
-                    chemin_de_propagation2[1]=destination
-                    nombre_a_ete_trouve=True
+                if voisin not in vu:
+                        vu.add(voisin)
+                        file.emfiler(av, voisin)
 
-                    
-                    chemin_de_propagation3.append(voisin)
+            if (chercheunnombre==True) and (nombre_a_ete_trouve==False) :
+                
+                chemin_de_propagation3 = []
 
-                for voisin2 in voisinsliste2:
-                    print("resultat 2 :"+ str(voisinsliste2))
-                    if  (voisin2==destination) and (chemin_de_propagation2[1]==-1) :
+                chemin_de_propagation2[0]=cand
+                #print("base : "+str(cand))
 
-                        
-                        
-                        chemin_de_propagation3.append(voisin)
-                        chemin_de_propagation3.append(voisin2)
-
+                for voisin in voisinsliste:
+                    voisinsliste2 = voisins(voisin)
+                    #print("resultat1 : "+str(voisinsliste))
+                    if (voisin==destination) :
+                        chemin_de_propagation2[1]=destination
                         nombre_a_ete_trouve=True
 
-                if voisin not in vu:
-                    vu.add(voisin)
-                    file.emfiler(av, voisin)
-    if (nombre_a_ete_trouve==True) :
+                        chemin_de_propagation3.append(voisin)
 
+                    for voisin2 in voisinsliste2:
+                        #print("resultat 2 :"+ str(voisinsliste2))
+                        if  (voisin2==destination) and (chemin_de_propagation2[1]==-1) :
+
+                            chemin_de_propagation3.append(voisin)
+                            chemin_de_propagation3.append(voisin2)
+
+                            nombre_a_ete_trouve=True
+
+        if (nombre_a_ete_trouve==True) :
+
+            chemin_de_propagation2_debut=chemin_de_propagation2[0]
+            destination=chemin_de_propagation2_debut
+
+            chemin_de_propagation = chemin_de_propagation3 + chemin_de_propagation 
+
+            chemin_de_propagation4=[]
+            limite_propagation=False
         
-
-        chemin_de_propagation2_debut=chemin_de_propagation2[0]
-        destination=chemin_de_propagation2_debut
-
-        #chemin_de_propagation.pop(0)
-
-        
-
-        #chemin_de_propagation3= chemin_de_propagation3 + chemin_de_propagation
-
-        #chemin_de_propagation3.pop()
-
-
-        chemin_de_propagation = chemin_de_propagation3 + chemin_de_propagation 
-
-        chemin_de_propagation4=[]
-        limite_propagation=False
-    
-        for a in chemin_de_propagation:
+            for a in chemin_de_propagation:
+                
+                
+                if limite_propagation==False:
+                    chemin_de_propagation4.append(a)
+                
+                if (a==destination_global):
+                    limite_propagation=True
             
-            
-            if limite_propagation==False:
-                chemin_de_propagation4.append(a)
-            
-            if (a==destination_global):
-                limite_propagation=True
-        
-        
-        chemin_de_propagation=chemin_de_propagation4
-        
+            chemin_de_propagation=chemin_de_propagation4
 
-        if (chemin_de_propagation2_debut!=depart) :
-            parcours_en_largeur(depart,True)
-        else : 
-            chemin_de_propagation4=chemin_de_propagation
-            chemin_de_propagation=[]
-            chemin_de_propagation.append(depart)
-            chemin_de_propagation=chemin_de_propagation+chemin_de_propagation4
-
+            if (chemin_de_propagation2_debut!=depart) :
+                parcours_en_largeur(depart,True,False)
+            else : 
+                chemin_de_propagation4=chemin_de_propagation
+                chemin_de_propagation=[]
+                chemin_de_propagation.append(depart)
+                chemin_de_propagation=chemin_de_propagation+chemin_de_propagation4
+    else: 
+        erreur(f"Erreur : Le sommet de départ n'est pas valide ou n'existe pas dans le graphe.")
 
     return res
 
@@ -389,35 +394,28 @@ def plus_grand_influenceur() :
             plus_grand_influenceur_int=i
     return plus_grand_influenceur_int
 
-
-
-#res2 = parcours_en_largeur(0,False)
-#print(res2)
-
-
-chemin_de_propagation=[]
-chemin_de_propagation2=[]
-destination=0
-destination_global=0
 def propagation(depart,destination2):
     global chemin_de_propagation
     global chemin_de_propagation2
     global destination
     global destination_global
+    global somint
     destination=destination2
     destination_global=destination
     chemin_de_propagation=[]
-    #print("chien"+str(chemin_de_propagation2[2]))
-    parcours_en_largeur(depart,True)
+    begin_graphe(True)
+    if not depart<len(somint) or not destination2<len(somint):
+        erreur("Erreur : Le sommet de départ n'est pas valide ou n'existe pas dans le graphe.")
+    else:
+        if (depart==destination2) :
+            erreur(f"Erreur : le départ est le même point que l'arrivée")
+        else :
+            parcours_en_largeur(depart,True,False)
+            
     return chemin_de_propagation
-
-
 
 
 def temps_de_propagation(depart,destination2):
     chemin = propagation(  depart,destination2)
     durée=(len(chemin)-1)*5
     return durée
-
-#toto = temps_de_propagation(0,2)
-#print("temps de propagation "+str(toto))

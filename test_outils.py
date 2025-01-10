@@ -30,22 +30,21 @@ outils.compter_aretes_list_adjacente(tableau_list_adjacente)
 outils.compter_arcs_list_adjacente(tableau_list_adjacente)
 
 # Effectue un parcours en profondeur (Depth-First Search) à partir du nœud 0 (dans un graphe représenté en interne)
-p = outils.parcours_en_profondeur(2,True)
-print(p)
-      
-assert outils.parcours_en_largeur(5,False)
-p2 = outils.parcours_en_largeur(5,False)
-print(p2)
+p = outils.parcours_en_profondeur(8, True)
+print(f"\nLe parcour en profondeur est : " + str(p))
+
+p2 = outils.parcours_en_largeur(8, False,True)
+print(f"\nLe parcour en largeur est : " + str(p2))
 
 inf = outils.plus_grand_influenceur()
-print(inf)
+print(f"\nLe plus grand influenceur est : " + str(inf))
 
 commu = outils.verifier_une_communautee()
-print(commu)
+print(f"\nLa communautée est : " + str(commu))
 
-prop = outils.propagation(0,2)
-dur = outils.temps_de_propagation(0,2)
+prop = outils.propagation(0,1)
+dur = outils.temps_de_propagation(0,1)
 
-print("durée: "+str(dur)+" minutes ")
+print(f"\nChemin le plus cours : " + str(prop))
 
-print("chemin le plus cours : "+str(prop))
+print(f"\nDurée: "+str(dur)+" minutes ")
