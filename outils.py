@@ -419,5 +419,5 @@ def temps_de_propagation(depart,destination2):
     durée=(len(chemin)-1)*5
     return durée
 
-toto = temps_de_propagation(0,2)
-print("temps de propagation "+str(toto))
+#toto = temps_de_propagation(0,2)
+#print("temps de propagation "+str(toto))
