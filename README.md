@@ -45,6 +45,6 @@ Top influenceur - Fait
 
 Chemin minimum - Fait
 
-Temps de propagation - En cours
+Temps de propagation - Fait
 
 Génération de graphes - À venir
