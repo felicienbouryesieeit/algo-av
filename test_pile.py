@@ -11,7 +11,7 @@ pile.empiler(ma_pile, 12)  # Ajoute 12
 pile.empiler(ma_pile, 13)  # Ajoute 13
 
 # Vérifie si la pile est vide avant de retirer un élément
-if not pile.pile_vide(ma_pile):
+if not pile.estvide(ma_pile):
     pile.depiler(ma_pile)  # Retire l'élément au sommet (13)
 else:
     print("La pile est vide, impossible de dépiler.")
